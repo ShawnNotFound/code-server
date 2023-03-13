@@ -56,6 +56,12 @@ int main()
 
     dijkstra();
 
+    if(d[n] == 0x3f3f3f3f)
+    {
+        cout << "-1" << endl;
+        return 0;
+    }
+
     cout << d[n] << endl;
 
     return 0;
