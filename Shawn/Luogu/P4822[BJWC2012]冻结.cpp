@@ -10,9 +10,9 @@ const int K = 50 + 5;
 
 using namespace std;
 
-int head[N * K], ver[M * K], edge[M * K], nxt[M * K] tot;
+int head[M * K], ver[M * K], edge[M * K], nxt[M * K], tot;
 bool v[M * K];
-int n, m, k, a, b, t, ans = 0x3f;
+int n, m, k, a, b, t, ans = 0x3f3f3f3f;
 
 priority_queue<pair<int, int>> q;
 int d[M * K];
@@ -27,9 +27,12 @@ void add(int x, int y, int z)
 
 void build(int x, int y, int z)
 {
-    for(int i = 0; i <= k - 1; i ++)
+    for(int i = 0; i < k; i ++)
     {
+        add(n * i + x, n * i + y, z);
+        add(n * i + y, n * i + x, z);
         add(n * i + x, n * (i + 1) + y, z / 2);
+        add(n * i + y, n * (i + 1) + x, z / 2);
     }
 }
 
@@ -37,7 +40,9 @@ void dijkstra()
 {
     memset(d, 0x3f, sizeof(d));
     memset(v, false, sizeof(v));
-    d[1] = 0;
+    for(int i = 1 ; i <= k + 1; i ++)
+        d[n * i - n + 1] = 0;
+
     q.push(make_pair(0, 1));
 
     while(q.size())
@@ -48,32 +53,44 @@ void dijkstra()
         
         for(int i = head[x]; i; i = nxt[i])
         {
-            int y = ver[i], z = edge[z];
+            int y = ver[i], z = edge[i];
             if(d[y] > d[x] + z)
             {
                 d[y] = d[x] + z;
-                q.push(make_pair(-d[y], ))
+                q.push(make_pair(-d[y], y));
             }
         }
     }
 }
 
+
 int main()
 {
     cin >> n >> m >> k;
-    for(int i = 1; i <= n; i ++)
+    for(int i = 1; i <= m; i ++)
     {
         cin >> a >> b >> t;
         build(a, b, t);
-        build(b, a, t);
     }
 
     dijkstra();
 
-    for(int i = 1; i <= k; i ++)
+    for(int i = 1; i <= k + 1; i ++)
         ans = min(ans, d[n * i]);
 
-    cout << ans;
+    for(int i = 0; i <= k; i ++)
+    {
+        for(int j = 1; j <= n; j ++)
+            cout << d[i * n + j] << " ";
+        cout << endl;
+    }
+
+    cout << ans << endl;
     
     return 0;
 }
+/*
+1 --4--> 2
+4 --6--> 2
+
+*/
