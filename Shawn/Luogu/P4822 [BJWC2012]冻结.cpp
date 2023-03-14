@@ -43,7 +43,18 @@ void dijkstra()
     while(q.size())
     {
         int x = q.top().second; q.pop();
+        if(v[x]) continue;
+        v[x] = true;
         
+        for(int i = head[x]; i; i = nxt[i])
+        {
+            int y = ver[i], z = edge[z];
+            if(d[y] > d[x] + z)
+            {
+                d[y] = d[x] + z;
+                q.push(make_pair(-d[y], ))
+            }
+        }
     }
 }
 
