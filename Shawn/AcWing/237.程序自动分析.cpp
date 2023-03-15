@@ -31,6 +31,7 @@ int main()
     for(int m = 1; m <= t; m ++)
     {
         cin >> n;
+    
         memset(fa, 0, sizeof(fa));
         for(int k = 1; k <= n; k ++)
         {
