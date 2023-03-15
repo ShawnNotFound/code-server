@@ -34,6 +34,8 @@ void build(int x, int y, int z)
         add(n * i + x, n * (i + 1) + y, z / 2);
         add(n * i + y, n * (i + 1) + x, z / 2);
     }
+    add(n * k + x, n * k + y, z);
+    add(n * k + y, n * k + x, z);
 }
 
 void dijkstra()
@@ -66,6 +68,8 @@ void dijkstra()
 
 int main()
 {
+    cin.tie(0);
+    cout.tie(0);
     cin >> n >> m >> k;
     for(int i = 1; i <= m; i ++)
     {
@@ -78,12 +82,12 @@ int main()
     for(int i = 1; i <= k + 1; i ++)
         ans = min(ans, d[n * i]);
 
-    for(int i = 0; i <= k; i ++)
-    {
-        for(int j = 1; j <= n; j ++)
-            cout << d[i * n + j] << " ";
-        cout << endl;
-    }
+    // for(int i = 0; i <= k; i ++)
+    // {
+    //     for(int j = 1; j <= n; j ++)
+    //         cout << d[i * n + j] << " ";
+    //     cout << endl;
+    // }
 
     cout << ans << endl;
     
