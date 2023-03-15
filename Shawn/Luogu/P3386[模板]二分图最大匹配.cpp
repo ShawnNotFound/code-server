@@ -1,6 +1,6 @@
 #include<iostream>
 #include<cstring>
-#include<alorithm>
+#include<algorithm>
 #include<cmath>
 #include<queue>
 
@@ -10,7 +10,7 @@ const int inf = 1 << 29;
 using namespace std;
 
 int head[N], ver[N], edge[N], nxt[N], d[N], now[N];
-int n, m, e, s = 0, t = N - 9;
+int n, m, e, s = 0, t = N - 9, maxflow, u, v, tot;
 queue<int> q;
 
 void add(int x, int y, int z)
