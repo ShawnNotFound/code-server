@@ -4,9 +4,9 @@
 #include<algorithm>
 #include<queue>
 
-const int N = 50 + 5;
+const int N = 5000 + 5;
 const int M = 1e3 + 5; 
-const int K = 50 + 5;
+const int K = 5000 + 5;
 
 using namespace std;
 
@@ -41,9 +41,9 @@ void build(int x, int y, int z)
 void dijkstra()
 {
     memset(d, 0x3f, sizeof(d));
-    memset(v, false, sizeof(v));
-    for(int i = 1 ; i <= k + 1; i ++)
-        d[n * i - n + 1] = 0;
+    //for(int i = 1 ; i <= k + 1; i ++)
+    //    d[n * i - n + 1] = 0;
+    d[1] = 0;
 
     q.push(make_pair(0, 1));
 
@@ -68,6 +68,7 @@ void dijkstra()
 
 int main()
 {
+    ios::sync_with_stdio(false);
     cin.tie(0);
     cout.tie(0);
     cin >> n >> m >> k;
@@ -89,7 +90,7 @@ int main()
     //     cout << endl;
     // }
 
-    cout << ans << endl;
+    cout << ans << '\n';
     
     return 0;
 }
@@ -98,3 +99,4 @@ int main()
 4 --6--> 2
 
 */
+
