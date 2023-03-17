@@ -86,15 +86,18 @@ signed main()
         while(flow = dinic(s, INF))
             maxflow += flow;
 
+    if(!maxflow)
+    {
+        cout << "Orz Ni Jinan Saint Cow!" << endl;
+        return 0;
+    }
+
     if(x % maxflow == 0)
         times = x / maxflow;
     else 
         times = x / maxflow + 1;
 
-    if(maxflow)
-        cout << maxflow << " " << times << endl;
-    else
-        cout << "Orz Ni Jinan Saint Cow!" << endl;
+    cout << maxflow << " " << times << endl;
 
     //cout << maxflow << endl;
 
