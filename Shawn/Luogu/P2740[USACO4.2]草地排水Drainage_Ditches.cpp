@@ -1,19 +1,16 @@
 #include<iostream>
-#include<cmath>
 #include<cstring>
 #include<algorithm>
+#include<cmath>
 #include<queue>
 
-#define int long long
-
-const int N = 5e3 + 10;
-const int  INF = 1 << 29;
+const int N = 210;
+const int INF = 1 << 29;
 
 using namespace std;
 
-int d[N], ver[N], nxt[N], edge[N], v[N], head[N], now[N], flag[N][N];
-int n, m, s, t, maxflow, tot, u, vv, w;
-
+int ver[N], head[N], nxt[N], edge[N], d[N], now[N], flag[N][N];
+int n, m, u, vv, w, tot, maxflow, s = 1, t;
 queue<int> q;
 
 void add(int x, int y, int z)
@@ -28,20 +25,19 @@ bool bfs()
     while(q.size())
         q.pop();
     
-    q.push(s); d[s] = 1;
-    now[s] = head[s];
+    q.push(s); d[s] = 1; now[s] = head[s];
 
     while(q.size())
     {
         int x = q.front(); q.pop();
         for(int i = head[x]; i; i = nxt[i])
         {
-            int y = ver[i];
+            int y = ver[i]; 
             if(!d[y] && edge[i])
             {
                 d[y] = d[x] + 1;
-                q.push(y);
                 now[y] = head[y];
+                q.push(y);
                 if(y == t)
                     return 1;
             }
@@ -52,7 +48,7 @@ bool bfs()
 
 int dinic(int x, int flow)
 {
-    if(x == t)  
+    if(x == t)
         return flow;
     int rest = flow, k, i;
     for(i = now[x]; i && rest; i = nxt[i])
@@ -66,16 +62,17 @@ int dinic(int x, int flow)
                 d[y] = 0;
             edge[i] -= k;
             edge[i ^ 1] += k;
-            rest -= k;
+            rest -= k; 
         }
     }
     return flow - rest;
 }
 
-signed main()
+int main()
 {
-    cin >> n >> m >> s >> t;
-    for(int i = 1; i <= m; i ++)
+    cin >> n >> m;
+    t = m;
+    for(int i = 1; i <= n; i ++)
     {
         cin >> u >> vv >> w;
         if(!flag[u][vv])
@@ -89,12 +86,15 @@ signed main()
         }
     }
 
+    //cout << "finish read" << endl;
+
     int flow = 0;
     while(bfs())
         while(flow = dinic(s, INF))
             maxflow += flow;
-        
+    
     cout << maxflow << endl;
 
     return 0;
+
 }
