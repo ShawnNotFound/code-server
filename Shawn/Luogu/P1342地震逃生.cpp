@@ -6,7 +6,7 @@
 
 #define int long long
 
-const int N = 2e3 + 10;
+const int N = 1e4 + 10;
 const int INF = 1 << 29;
 
 using namespace std;
@@ -30,7 +30,7 @@ bool bfs()
         q.pop();
     
     q.push(s); d[s] = 1; now[s] = head[s];
-    while(q.size())
+    while(q.size())u8
     {
         int x = q.front(); q.pop();
         for(int i = head[x]; i; i = nxt[i])
@@ -91,7 +91,11 @@ signed main()
     else 
         times = x / maxflow + 1;
 
-    cout << maxflow << " " << times << endl;
+    if(maxflow)
+        cout << maxflow << " " << times << endl;
+    else
+        cout << "Orz Ni Jinan Saint Cow!" << endl;
+
     //cout << maxflow << endl;
 
     return 0;
