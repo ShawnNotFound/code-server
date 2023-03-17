@@ -30,7 +30,7 @@ bool bfs()
         q.pop();
     
     q.push(s); d[s] = 1; now[s] = head[s];
-    while(q.size())u8
+    while(q.size())
     {
         int x = q.front(); q.pop();
         for(int i = head[x]; i; i = nxt[i])
