@@ -11,8 +11,8 @@ const int  INF = 1 << 29;
 
 using namespace std;
 
-int d[N], ver[N], nxt[N], edge[N], v[N], head[N];
-int n, m, s, t, maxflow, flow, tot;
+int d[N], ver[N], nxt[N], edge[N], v[N], head[N], now[N];
+int n, m, s, t, maxflow, tot, u, vv, w;
 
 queue<int> q;
 
@@ -50,18 +50,18 @@ bool bfs()
     return 0;
 }
 
-void dinic(int x, int flow)
+int dinic(int x, int flow)
 {
     if(x == t)  
         return flow;
     int rest = flow, k, i;
-    for(i = head[x]; i && rest; i = nxt[i])
+    for(i = now[x]; i && rest; i = nxt[i])
     {
         int y = ver[i];
         now[x] = i;
         if(edge[i] && d[y] == d[x] + 1)
         {
-            k = dinic(i, min(rest, edge[i]));
+            k = dinic(y, min(rest, edge[i]));
             if(!k)
                 d[y] = 0;
             edge[i] -= k;
@@ -81,6 +81,7 @@ signed main()
         add(u, vv, w);
     }
 
+    int flow = 0;
     while(bfs())
         while(flow = dinic(s, INF))
             maxflow += flow;
