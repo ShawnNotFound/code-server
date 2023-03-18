@@ -4,20 +4,20 @@
 #include<algorithm>
 #include<queue>
 
-#define int long long
+typedef long long ll;
 
-const int N = 1e4 + 10;
-const int INF = 1 << 29;
+const ll N = 1e4 + 10;
+const ll INF = 1 << 29;
 
 using namespace std;
 
-int ver[N], edge[N], nxt[N], head[N], d[N], now[N];
-int tot, maxflow;
-int n, m, s = 1, t, x, u, vv, w;
-int times;
-queue<int> q;
+ll ver[N], edge[N], nxt[N], head[N], d[N], now[N], flag[N][N];
+ll tot = 1, maxflow;
+ll n, m, s = 1, t, x, u, vv, w;
+ll times;
+queue<ll> q;
 
-void add(int x, int y, int z)
+void add(ll x, ll y, ll z)
 {
     ver[++ tot] = y, edge[tot] = z, nxt[tot] = head[x], head[x] = tot;
     ver[++ tot] = x, edge[tot] = 0, nxt[tot] = head[y], head[y] = tot;
@@ -32,10 +32,10 @@ bool bfs()
     q.push(s); d[s] = 1; now[s] = head[s];
     while(q.size())
     {
-        int x = q.front(); q.pop();
-        for(int i = head[x]; i; i = nxt[i])
+        ll x = q.front(); q.pop();
+        for(ll i = head[x]; i; i = nxt[i])
         {
-            int y = ver[i];
+            ll y = ver[i];
             if(!d[y] && edge[i])
             {
                 q.push(y);
@@ -49,14 +49,14 @@ bool bfs()
     return 0;
 }
 
-int dinic(int x, int flow)
+ll dinic(ll x, ll flow)
 {
     if(x == t)
         return flow;
-    int rest = flow, k, i;
+    ll rest = flow, k, i;
     for(i = now[x]; i && rest; i = nxt[i])
     {
-        int y = ver[i];
+        ll y = ver[i];
         now[x] = i;
         if(edge[i] && d[y] == d[x] + 1)
         {
@@ -71,17 +71,25 @@ int dinic(int x, int flow)
     return flow - rest;
 }
 
-signed main()
+int main()
 {
     cin >> n >> m >> x;
     t = n;
-    for(int i = 1; i <= m; i ++)
+    for(ll i = 1; i <= m; i ++)
     {
         cin >> u >> vv >> w;
-        add(u, vv, w);
+        if(!flag[u][vv])
+        {
+            add(u, vv, w);
+            flag[u][vv] = tot;
+        }
+        else
+        {
+            edge[flag[u][vv] - 1] += w;
+        }
     }
 
-    int flow = 0;
+    ll flow = 0;
     while(bfs())
         while(flow = dinic(s, INF))
             maxflow += flow;

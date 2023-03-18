@@ -6,13 +6,13 @@
 
 #define int long long
 
-const int N = 5e3 + 10;
+const int N = 1e4 + 10;
 const int  INF = 1 << 29;
 
 using namespace std;
 
 int d[N], ver[N], nxt[N], edge[N], v[N], head[N], now[N], flag[N][N];
-int n, m, s, t, maxflow, tot, u, vv, w;
+int n, m, s, t, maxflow, tot = 1, u, vv, w;
 
 queue<int> q;
 
@@ -63,7 +63,7 @@ int dinic(int x, int flow)
         {
             k = dinic(y, min(rest, edge[i]));
             if(!k)
-                d[y] = 0;
+                d[y] = INF;
             edge[i] -= k;
             edge[i ^ 1] += k;
             rest -= k;
