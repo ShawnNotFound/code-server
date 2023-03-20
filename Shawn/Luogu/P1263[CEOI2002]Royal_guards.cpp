@@ -121,8 +121,8 @@ int main()
         {
             if(map[i][j] == 1 || map[i][j] == 2)
                 continue;
-            match[tot] = make_pair(i, j);
             match[tot + 1] = make_pair(i, j);
+            match[tot + 2] = make_pair(i, j);
             //cout << "match[tot] " << tot << " has been set to " << i << "," << j << endl;
             add(x[i][j], y[i][j] + n * m, 1);
         }
@@ -144,21 +144,39 @@ int main()
 
     cout << maxflow << endl;
 
-    for(int i = head[s]; i; i = nxt[i])
-        if(!edge[i])
-        {
-            //cout << "find " << i << endl;
-            for(int j = head[ver[i]]; j; j = nxt[j])
-            {
-                if(!edge[j])
-                {
-                    cout << ver[j] - n * m << " " << ver[j ^ 1] << endl;
-                    cout << match[ver[j] - n * m].first << " " << match[ver[j] - n * m].second << endl;
-                    cout << match[ver[j ^ 1]].first << " " << match[ver[j ^ 1]].second << endl;
-                    cout << endl;
-                }
+    // for(int i = head[s]; i; i = nxt[i])
+    //     if(!edge[i])
+    //     {
+    //         //cout << "find " << i << endl;
+    //         for(int j = head[ver[i]]; j; j = nxt[j])
+    //         {
+    //             if(!edge[j])
+    //             {
+    //                 cout << ver[j] - n * m << " " << ver[j ^ 1] << endl;
+    //                 cout << match[ver[j] - n * m].first << " " << match[ver[j] - n * m].second << endl;
+    //                 cout << match[ver[j ^ 1]].first << " " << match[ver[j ^ 1]].second << endl;
+    //                 cout << endl;
+    //             }
+    //         }
+    //     }
+
+    // for(int i = 2;i <= tot;i += 2)
+    // {
+    //     if(ver[i] != s && ver[i ^ 1] != s)
+    //     if(ver[i] != t && ver[i ^ 1] != t)
+    //     if(edge[i ^ 1] != 0)
+    //     {
+    //         cout << match[ver[i ^ 1]].first << " " << match[ver[i ^ 1]].second << endl;
+    //     }
+    // }
+
+    for (int e = head[s]; e; e = nxt[e]) {
+        for (int j = head[ver[e]]; j; j = nxt[j]) {
+            if (!edge[j] && edge[j^1] && ver[j] ^ s) {
+                cout << match[ver[j ^ 1]].first << ' ' << match[ver[j ^ 1]].second << endl;
             }
         }
+    }
 
     return 0;
 
