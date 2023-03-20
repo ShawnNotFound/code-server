@@ -18,6 +18,11 @@ int head[N], ver[N], edge[N], nxt[N], d[N], now[N], raw_edge[N], rst[N];
 int maxflow, u, v;
 queue<int> q;
 
+struct tai_nan_le_wo_yao_tui_sai
+{
+    int num, x, y;
+}l[N], r[N];// 用于二分图匹配
+
 void add(int x, int y, int z)
 {
     ver[++ tot] = y, edge[tot] = z, nxt[tot] = head[x], head[x] = tot;
@@ -90,14 +95,14 @@ int main()
     {
 		for(int j = 1;j <= m; j ++)
         {
-			if(map[i][j] == '#')
+			if(map[i][j] == '.')
                 continue;
 			if(j == 1)
 				hang[i][j] = ++ cnthang;
 			else
             {
-				if(map[i][j - 1] != '#')
-					hang[i][j] = hang[i][j - 1];
+				if(map[i][j-1] != '.')
+					hang[i][j] = hang[i][j-1];
 				else
 					hang[i][j] = ++ cnthang;
 			}
@@ -106,7 +111,7 @@ int main()
 				lie[i][j] = ++ cntlie;
 			else
             {
-				if(map[i - 1][j] != '#')
+				if(map[i - 1][j] != '.')
 					lie[i][j] = lie[i - 1][j];
 				else
 					lie[i][j] = ++ cntlie;
@@ -127,12 +132,11 @@ int main()
     {
 		for(int j = 1;j <= m; j ++)
         {
-			if(map[i][j] == 'x' || map[i][j] == '#')
+			if(map[i][j] == '.')
                 continue;
 			add(hang[i][j], lie[i][j] + n * m, 1);
 		}
 	}
-    
 	for(int i = 1;i <= cnthang; i ++)
 		add(s, i, 1);
     
@@ -143,7 +147,7 @@ int main()
 	while(bfs())
         while(flow = dinic(s, INF))
 		    maxflow += flow;
-
+            
 	cout << maxflow << endl;
 
     return 0;

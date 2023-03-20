@@ -4,22 +4,18 @@
 #include<cmath>
 #include<queue>
 
-const int N = 2e2 + 10;
+const int M = 5e2 + 10;
+const int N = 5e5 + 10;
 const int INF = 1 << 29;
 
 using namespace std;
 
-int map[N][N];
-int m, n, ltot, rtot, tot = 1, s, t, cnt;
-bool flag = true;
-int head[N], ver[N], edge[N], nxt[N], d[N], now[N], raw_edge[N], rst[N];
-int maxflow, u, v;
+int map[M][M], x[M][M], y[M][M];
+int m, n, tot = 1, s, t, cntx, cnty;
+int head[N], ver[N], edge[N], nxt[N], d[N], now[N];
+int maxflow;
+pair<int, int> match[N];
 queue<int> q;
-
-struct tai_nan_le_wo_yao_tui_sai
-{
-    int num, x, y;
-}l[N], r[N];// 用于二分图匹配
 
 void add(int x, int y, int z)
 {
@@ -77,96 +73,94 @@ int dinic(int x, int flow)
     return flow - rest;
 }
 
+
 int main()
 {
-    // for(int i = 0; i <= 10; i ++)
-    //     for(int j = 0; j <= 10; j ++)
-    //         map[i][j] = 3;
-
-    
-
+    memset(map, 0x3f, sizeof(map));
     cin >> m >> n;
+    s = 2 * m * n + 1;
+    t = 2 * m * n + 2;
     for(int i = 1; i <= m; i ++)
         for(int j = 1; j <= n; j ++)
             cin >> map[i][j];
 
-    // for(int i = 0; i <= 5; i ++)
-    // {
-    //     for(int j = 0; j <= 5; j ++)
-    //         cout << map[i][j] << " ";
-    //     cout << endl;
-    // }
 
     for(int i = 1; i <= m; i ++)
     {
         for(int j = 1; j <= n; j ++)
         {
-            if(flag && map[i][j] == 0)  
-            {
-                l[++ ltot] = {++ cnt, i, j};
-                flag = false;
-            }
             if(map[i][j] == 2)
-                flag = true;
+                continue;
+
+            if(j == 1)
+                x[i][j] = ++ cntx;
+            else
+            {
+                if(map[i][j - 1] != 2)
+                    x[i][j] = x[i][j - 1];
+                else
+                    x[i][j] = ++ cntx;
+            }
+
+            if(i == 1)
+                y[i][j] = ++ cnty;
+            else
+            {
+                if(map[i - 1][j] != 2)  
+                    y[i][j] = y[i - 1][j];
+                else
+                    y[i][j] = ++ cnty;
+            }
         }
-        flag = true;
     }
-        
-    for(int i = 1; i <= n; i ++)
+
+
+    for(int i = 1; i <= m; i ++)
     {
-        flag = true;
-        for(int j = 1; j <= m; j ++)
+        for(int j = 1; j <= n; j ++)
         {
-            if(flag && map[i][j] == 0)  
-            {
-                r[++ rtot] = {++ cnt, i, j};
-                flag = false;
-            }
-            if(map[i][j] == 2)
-                flag = true;
+            if(map[i][j] == 1 || map[i][j] == 2)
+                continue;
+            match[tot] = make_pair(i, j);
+            match[tot + 1] = make_pair(i, j);
+            //cout << "match[tot] " << tot << " has been set to " << i << "," << j << endl;
+            add(x[i][j], y[i][j] + n * m, 1);
         }
     }
 
-    s = cnt + 2, t = cnt + 3;
 
-    for(int i = 1; i <= ltot; i ++)
+    for(int i = 1; i <= cntx; i ++)
         add(s, i, 1);
-    for(int i = ltot + 1; i <= rtot + ltot; i ++)
-        add(i, t, 1);
-    for(int i = 1; i <= ltot; i ++)
-        for(int j = ltot + 1; j <= rtot + ltot; j ++)
-        {
-            add(i, j, INF);
-        }
+    for(int i = 1; i <= cnty; i ++)
+        add(i + n * m, t, 1);
 
-    int flow = 0;
+    int flow = 0, maxflow = 0;
+
     while(bfs())
-        while(flow = dinic(s, INF)) 
+        while(flow = dinic(s, INF))
+        {
             maxflow += flow;
+        }
 
     cout << maxflow << endl;
 
-    for(int i = 2;i <= ltot;i += 2)
-    {
-        if(ver[i] != s && ver[i ^ 1] != s)
-        if(ver[i] != t && ver[i ^ 1] != t)
-        if(edge[i ^ 1] != 0)
+    for(int i = head[s]; i; i = nxt[i])
+        if(!edge[i])
         {
-            //cout << map[l[ver[i ^ 1]].x][l[ver[i ^ 1]].y] << endl;
-            cout << l[ver[i ^ 1]].x << " " << l[ver[i ^ 1]].y << endl;
+            //cout << "find " << i << endl;
+            for(int j = head[ver[i]]; j; j = nxt[j])
+            {
+                if(!edge[j])
+                {
+                    cout << ver[j] - n * m << " " << ver[j ^ 1] << endl;
+                    cout << match[ver[j] - n * m].first << " " << match[ver[j] - n * m].second << endl;
+                    cout << match[ver[j ^ 1]].first << " " << match[ver[j ^ 1]].second << endl;
+                    cout << endl;
+                }
+            }
         }
-    }
-    for(int i = ltot + 2;i <= tot;i += 2)
-    {
-        if(ver[i] != s && ver[i ^ 1] != s)
-        if(ver[i] != t && ver[i ^ 1] != t)
-        if(edge[i ^ 1] != 0)
-        {
-            //cout << map[r[ver[i ^ 1]].x][r[ver[i ^ 1]].y] << endl;
-            cout << r[ver[i ^ 1]].x << " " << r[ver[i ^ 1]].y << endl;
-        }
-    }
 
     return 0;
+
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 }
