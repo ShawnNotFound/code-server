@@ -6,6 +6,7 @@
 
 //#define int long long
 const int N = 1e6 + 10;
+const int INF = 1 << 29;
 
 #ifdef __LINUX__
 #define getchar() getchar_unlocked()
@@ -51,9 +52,9 @@ void output(T x, char ch = ' ', Args... args) {
     output(args...);
 }
 
-bool v[N];
-int ver[N], nxt[N], cost[N], head[N], edge[N], incf[N], pre[N], d[N];
-int maxflow, ans, u, vv, w, c, n, m, s, t, mincost, tot = 1;
+bool v[N], ro[N];
+int ver[N], nxt[N], cost[N], head[N], edge[N], incf[N], pre[N], d[N], total[N];
+int maxflow, ans, u, vv, w, c, n, m, mincost, tot = 1, cnt;
 queue<int> q;
 
 // int num(int i,int k)
@@ -64,11 +65,12 @@ queue<int> q;
 void add(int x, int y, int z, int k)
 {
     ver[++ tot] = y, edge[tot] = z, cost[tot] = k, nxt[tot] = head[x], head[x] = tot;
-    ver[++ tot] = x, edge[tot] = 0, cost[tot] = -k, nxt[tot] = head[y], head[y] = tot;
+    //ver[++ tot] = x, edge[tot] = 0, cost[tot] = -k, nxt[tot] = head[y], head[y] = tot, ro[tot] = false;
 }
 
-bool spfa()
+bool spfa(int s, int t)
 {
+    //cnt = 0;
     memset(d, 0x3f, sizeof(d));
     memset(v, false, sizeof(v));
     while(q.size())
@@ -83,8 +85,9 @@ bool spfa()
             if(!edge[i])
                 continue;
             int y = ver[i];
-            if(d[y] > d[x] + cost[i])
+            if(d[y] > d[x] + cost[i] || d[x] + cost[i] <= 200)
             {
+                //cnt ++;
                 d[y] = d[x] + cost[i];
                 incf[y] = min(incf[x], edge[i]);
                 pre[y] = i;
@@ -97,12 +100,12 @@ bool spfa()
         }
     }
     //cout << d[t] << endl;
-    if(d[t] == 0x3f3f3f3f)   
+    if(d[t] >= 0x3f3f3f3f)   
         return false;
     return true;
 }
 
-void Edmonds_Karp()
+void Edmonds_Karp(int s, int t)
 {
     int x = t;
     while(x != s)
@@ -112,6 +115,7 @@ void Edmonds_Karp()
         edge[i ^ 1] += incf[t];
         x = ver[i ^ 1];
     }
+    //cout << cnt << "" << endl;
     maxflow += incf[t];
     mincost += d[t] * incf[t];
 }
@@ -120,23 +124,65 @@ void Edmonds_Karp()
 
 signed main()
 {
-    //cout << "calculating..." << endl;
+    int s, t;
+    cout << "calculating..." << endl;
     //freopen("P3381_8.in", "r", stdin);
     cin >> n >> m >> s >> t;
     for(int i = 1; i <= m; i ++)
     {
         input(u, vv, w, c);
-        //add(num(u, 1), num(vv, 0), w, 0);
-        //add(num(u, 0), num(u, 1), w, c);
-        add(u, vv, w, c);
+        if(c >= 0)
+        {
+            add(u, vv, w, c);
+            add(vv, u, 0, -c);
+        }
+        else
+        {
+            add(vv, u, w, -c);
+            add(u, vv, 0, c);
+            total[u] -= w;
+            total[vv] += w;
+            mincost += w * c;
+        }
     }
 
-    //cout << "running main..." << endl;
+    int st = n + 1, tt = n + 2;
+    for(int i = 1; i <= n; i ++){
+        if(!total[i])
+            continue;
+        if(total[i] > 0)
+        {
+            add(st, i, total[i], 0);
+            add(i, st, 0, 0);
+        }
+        else
+        {
+            add(i, tt, -total[i], 0);
+            add(tt, i, 0, 0);
+        }
+    }
 
-    while(spfa())
+    add(t, s, INF, 0);
+    add(s, t, 0, 0);
+
+    cout << "running main..." << endl;
+
+
+    while(spfa(st, tt))
     {
-        //cout << "EK" << endl;
-        Edmonds_Karp();
+        cout << st << " " << tt << endl;
+        cout << "EK1" << endl;
+        Edmonds_Karp(st, tt);
+        cout << "FINISH EK1" << endl;
+    }
+
+    cout << "OUT" << endl;
+
+    maxflow = 0;
+    while(spfa(s, t))
+    {
+        cout << "EK" << endl;
+        Edmonds_Karp(s, t);
     }
     
     cout << maxflow << " " << mincost << endl;
