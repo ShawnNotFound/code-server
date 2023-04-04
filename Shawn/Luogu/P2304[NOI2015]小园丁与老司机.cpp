@@ -6,6 +6,7 @@
 #include<vector>
 
 const int N = 1e5 + 10;
+const int INF = 1 << 29;
 
 using namespace std;
 
@@ -53,8 +54,9 @@ void output(T x, char ch = ' ', Args... args) {
 }
 
 
-int ver[N], head[N], nxt[N], edge[N], v[N], head[N], now[N];
-int l[N], r[N], u[N], lu[N], ru[N];
+int d[N];
+int ver[N], head[N], nxt[N], edge[N], v[N], now[N];
+//int l[N], r[N], u[N], lu[N], ru[N];
 int n, m, s, t, maxflow, tot;
 queue<int> q;
 
@@ -78,6 +80,7 @@ bool bfs()
         int x = q.front(); q.pop();
         for(int i = head[x]; i; i = nxt[i])
         {
+            int y = ver[i];
             if(!d[y] && edge[i])
             {
                 d[y] = d[x] + 1;
@@ -112,20 +115,18 @@ int dinic(int x, int flow)
     return flow - rest;
 }
 
-int tot_lu, tot_ru, tot_l, tot_r, tot_u;
 
+int tot_lu, tot_ru, tot_l, tot_r, tot_u;
 
 struct dir_tt
 {
     int val, x, n;
-}
-dir_tt lu[N], ru[N];
+}lu[N], ru[N];
 
 struct dir_t1
 {
     int val, n;
-}
-dir_t1 l[N], r[N], u[N]; 
+}l[N], r[N], u[N]; 
 
 
 void lu_add(int val, int x, int num)
@@ -165,7 +166,7 @@ bool cmp_tt(dir_tt x, dir_tt y)
 {
     int vx = x.val, vy = y.val;
     if(vx == vy)
-        return x.x < x.y;
+        return x.x < y.x;
     return x.val < y.val;
 }
 
@@ -174,6 +175,28 @@ bool cmp_t1(dir_t1 x, dir_t1 y)
     int vx = x.val, vy = y.val;
     return vx < vy;
 }
+
+
+void solve_1()
+{
+
+}
+
+void solve_2()
+{
+    int flow = 0;
+    while(bfs())
+        while(flow = dinic(s, INF))
+            maxflow += flow;
+    cout << maxflow << endl;
+}
+
+
+void init()
+{
+    
+}
+
 
 int main()
 {
@@ -197,6 +220,12 @@ int main()
     sort(r + 1, r + tot_r + 1, cmp_t1);
     sort(u + 1, u + tot_u + 1, cmp_t1);
 
+    init();
 
+    solve_1();
+
+    solve_2();
+
+    return 0;
     
 }
