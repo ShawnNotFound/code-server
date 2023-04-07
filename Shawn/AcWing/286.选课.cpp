@@ -7,12 +7,12 @@ const int N = 310;
 
 using namespace std;
 
-int tot = 1, n, m;
+int tot, n, m;
 int ver[N], nxt[N], head[N], f[N][N];
 
 void add(int x, int y)
 {
-    ver[++ tot] = y, nxt[x] = head[x], head[x] = tot;
+    ver[++ tot] = y, nxt[tot] = head[x], head[x] = tot;
 }
 
 void dp(int u)
