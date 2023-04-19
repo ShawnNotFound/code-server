@@ -24,11 +24,11 @@ bool check()
     maxn[n - 1]=map[n - 1] - mid * (n - 1);
 
     for(int i = n - 2; i >= 1; i --)
-        maxn[i] = max(maxn[i+1], map[i] - mid * i);
+        maxn[i] = max(maxn[i + 1], map[i] - mid * i);
 
 
     for(int i = 2; i < n; i ++)
-        if(maxn[i] - minn[i-1] > map[n] - mid * n)
+        if(maxn[i] - minn[i - 1] > map[n] - mid * n)
             return false;
 
     return true;
