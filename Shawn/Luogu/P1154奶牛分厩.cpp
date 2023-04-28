@@ -1,42 +1,45 @@
 #include<iostream>
-#include<cstring>
 #include<algorithm>
+#include<cstring>
 #include<cmath>
 
-const int N = 5e3 + 10;
+const int N = 1e6 + 10;
 
 using namespace std;
 
-int s[N];
 int n;
-
-int gcd(int a, int b)
-{
-    return b ? gcd(b, a % b) : a;
-}
+int cow[N];
+bool v[N];
 
 int main()
 {
+    //read
     cin >> n;
     for(int i = 1; i <= n; i ++)
-        cin >> s[i];
+        cin >> cow[i];
 
-    for(int ans = 1; 1; ans ++)
+    //solve
+    for(int i = 1; i <= n; i ++)
+        for(int j = i + 1; j <= n; j ++)
+            v[abs(cow[i] - cow[j])] = true;
+    
+    for(int i = n;i < N; i ++)
     {
-        int tmp = s[1];
-        for(int i = 2; i <= n; i ++)
+        if(!v[i])
         {
-            int tmpp = (s[i] % ans) ? ans : (s[i] % ans);
-            tmp = gcd(tmp, tmpp);
-            cout << tmp << " ";
-            if(tmp == 1)
+            int f = 1;
+            for(int j = i;j < N; j += i)
+                if(v[j])
+                {
+                    f=0;
+                    break;
+                }
+
+            if(f)
             {
-                cout << ans << endl;
+                cout << i << endl;
                 return 0;
             }
         }
-        cout << endl;
     }
 }
-//1   
-//4 6 1 2 5
