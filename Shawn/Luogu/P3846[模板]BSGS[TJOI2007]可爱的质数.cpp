@@ -6,8 +6,9 @@
 
 #define int long long
 
-
 using namespace std;
+
+int y, z, p;
 
 namespace BSGS
 {
@@ -26,68 +27,53 @@ namespace BSGS
         return res;
     }
 
-    map<int, int> m;
-
-    void sol()
+    int bsgs(int y, int z, int p) 
     {
-        m.clear();
+        map<int, int> hash;
+        z %= p;
+        int t = sqrt(p) + 1;
 
-        y = ((y % p) + p) % p;
-        z = ((z % p) + p) % p;
+        for (int i = 0; i < t; i ++)
+            hash[z * qpow(y, i, p) % p] = i;
 
-        if(y == 0)
+        y = qpow(y, t, p);
+
+        if(!y)
+            return z == 0 ? 1 : -1;
+
+        for (int i = 1; i <= t; i ++) 
         {
-            if(z == 0)
+            int val = qpow(y, i, p);
+
+            if (hash.count(val)) 
             {
-                cout << "1" << endl;
-                return;
+                int j = hash[val];
+                if (i * t - j >= 0) return i * t - j;
             }
-
-            cout << "no solution" << endl;
-            return;
-        }
-        if(y == 1)
-        {
-            if(z == 1)
-            {
-                cout << "0" << endl;
-                return;
-            }
-
-            cout << "no solution" << endl;
-            return;
-        }
-        if(z == 1)
-        {
-            cout << 0 << endl;
-            return;
         }
 
-        int m = sqrt(p);
-
-        for(int i = 0, t = z; i < m; i ++, t = t * y % p)
-            m[t] = i;
-        
-        for(int i = 1, T = qpow(y, m), t = T; i <= p / m + 10; i ++, t * T % p)
-            if(m.count(t))
-            {
-                cout << m * i - m[t] << endl;
-                return;
-            }
-        
-        cout << "no solution" << endl; 
+        return -1;
     }
 }
 
+
+
+
 using namespace BSGS;
 
-int x, y, z, p;
 
 signed main()
 {
     cin >> p >> y >> z;
 
-    sol();
+    int ans = bsgs(y, z, p);
 
+    if (ans == -1)
+        cout << "no solution" << endl;
+    
+    else
+        cout << ans << endl;
+
+    
     return 0;
 }
