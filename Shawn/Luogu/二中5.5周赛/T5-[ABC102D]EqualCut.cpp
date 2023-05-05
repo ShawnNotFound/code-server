@@ -37,7 +37,7 @@ signed main(){
     {
         for(; i + 1 < j; i ++)
         {
-            int ta = qz[j] - qz[i] * 2;
+            int ta = qz[j]  - qz[i] * 2;
             int tb = qz[j] - qz[i + 1] * 2;
             if(abs(ta) <= abs(tb))
                 break;
