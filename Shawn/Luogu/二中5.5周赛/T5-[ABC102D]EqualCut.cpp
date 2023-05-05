@@ -22,7 +22,8 @@ int a[N], qz[N];
 //     return min(a, min(b, min(c, d)));
 // }
 
-signed main(){
+signed main()
+{
 	cin.tie(0);
 	cout.tie(0);
 	
