@@ -17,6 +17,7 @@ map<vector<int>, double> m;
 
 vector<int> v;
 
+int tt;
 int n, mm, x, y;
 int fa[110], size[110];
 // double ans;
@@ -53,9 +54,12 @@ double work(vector<int> tmpv)
     int vsize = tmpv.size();
     int tot = 0;
 
-    //map中没有tmpv这个块的值
-    if(m.count(tmpv))  
+    //map中有tmpv这个块的值
+    if(m.count(tmpv))
+    {
         return m[tmpv];
+    }  
+        
 
     //tmpv空了
     if(vsize == 1)
@@ -69,7 +73,7 @@ double work(vector<int> tmpv)
         tot += ctot(tmpv[i]);
     
     //tmp期望
-    double ans = (ctot(n) * 1.0) / ((ctot(n) - tot) * 1.0);
+    double ans = (tt * 1.0) / ((tt - tot) * 1.0);
 
     //暴力枚举每一次加边
     for(int i = 1; i < vsize; i ++)
@@ -87,7 +91,7 @@ double work(vector<int> tmpv)
             sort(ttmpv.begin(), ttmpv.end());
 
             //加上连接这个子子联通块的期望
-            ans += (1.0 * tmpv[i] * tmpv[j]) / (1.0 * (ctot(n) - tot)) * work(ttmpv);
+            ans += (1.0 * tmpv[i] * tmpv[j]) / (1.0 * (tt - tot)) * work(ttmpv);
         }
 
     //记录当前子联通块的期望
@@ -98,6 +102,7 @@ double work(vector<int> tmpv)
 int main()
 {
     cin >> n >> mm;
+    tt = ctot(n);
     
     init();
 
