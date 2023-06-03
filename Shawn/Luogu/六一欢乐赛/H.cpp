@@ -35,6 +35,8 @@ void init()
     // memset(size, 1, sizeof(size));
     for(int i = 1; i <= n; i ++)
         size[i] = 1;
+
+    v.clear();
 }
 
 //并查集
@@ -101,36 +103,37 @@ double work(vector<int> tmpv)
 
 int main()
 {
-    cin >> n >> mm;
-    tt = ctot(n);
-    
-    init();
-
-    for(int i = 1; i <= mm; i ++)
+    while( ~scanf( "%d%d", &n, &mm ) )
     {
-        cin >> x >> y;
+        tt = ctot(n);
+    
+        init();
 
-        x = get_father(x);
-        y = get_father(y);
-
-        if(x != y)
+        for(int i = 1; i <= mm; i ++)
         {
-            fa[x] = y;
-            size[y] += size[x];
+            cin >> x >> y;
+
+            x = get_father(x);
+            y = get_father(y);
+
+            if(x != y)
+            {
+                fa[x] = y;
+                size[y] += size[x];
+            }
         }
+
+        //找出每一个并查集
+        for(int i = 1; i <= n; i ++)
+            if(i == fa[i])
+                v.push_back(size[i]);
+
+        //从小到大排序
+        sort(v.begin(), v.end());
+
+        double ans = work(v);
+
+        cout << fixed << setprecision(6) << ans << endl;
     }
-
-    //找出每一个并查集
-    for(int i = 1; i <= n; i ++)
-        if(i == fa[i])
-            v.push_back(size[i]);
-
-    //从小到大排序
-    sort(v.begin(), v.end());
-
-    double ans = work(v);
-
-    cout << fixed << setprecision(6) << ans << endl;
-
     return 0;
 }
