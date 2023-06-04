@@ -15,7 +15,7 @@ public int removeVariety(String cookieVar)
 
     for(int i = 0; i < orders.size(); i ++)
     {
-        if(orders.get(i).getVariety().equal(cookieVar))
+        if(orders.get(i).getVariety().equals(cookieVar))
         {
             ans ++;
             orders.remove(i);
