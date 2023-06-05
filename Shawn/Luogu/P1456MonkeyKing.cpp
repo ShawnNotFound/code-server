@@ -49,9 +49,15 @@ void work(int a, int b)
     int rt, art, brt;
 
     key[a] >>= 1;
-    rt = combind(L[b], R[b]);
+    rt = combind(L[a], R[a]);
+    L[a] = R[a] = npl[a] = 0;
+    art = combind(rt, a);
+    fa[rt] = fa[a] = art;
 
     key[b] >>= 1;
+    rt = combind(L[b], R[b]);
+    fa[L[b]] = fa[R[b]] = rt;
+    L[b] = R[b] = npl[b] = 0;
     brt = combind(rt, b);
 
     fa[rt] = fa[b] = brt;
