@@ -1,0 +1,51 @@
+// tasks.json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "clang++",
+            "type": "shell",
+            "group": "build",
+            "command": "clang++",
+            "args": [
+                "${file}",
+                "-o",
+                "${fileBasenameNoExtension}.exe",
+                "-Wall",
+                "-g",
+                "-std=c++14",
+                "-fcolor-diagnostics"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "redirection run without pwsh",
+            "command": "g++ -g ${file} -o ${workspaceRoot}/executable_files/${fileBasenameNoExtension} -std=c++14 -O2 -fsanitize=undefined -fsanitize=address && cat ${workspaceRoot}/io/input | ${workspaceRoot}/executable_files/${fileBasenameNoExtension} > ${workspaceRoot}/io/output",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "problemMatcher": {
+        "owner": "c",
+        "fileLocation": [
+            "relative",
+            "${workspaceRoot}"
+        ],
+        "pattern": {
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+        }
+    }
+}

@@ -17,7 +17,7 @@ void flip(int x)
 }
 
 void query(int x)
-{    
+{
     for(int i = x; i; i = son[i])
     {
         if(b[i])
