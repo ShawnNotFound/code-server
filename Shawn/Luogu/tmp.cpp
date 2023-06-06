@@ -1,51 +1,77 @@
-#include<bits/stdc++.h>
-#define LL long long
-#define N 100005
+#include <bits/stdc++.h>
 using namespace std;
+const int N = 156, L = 1e6 + 6;
 
-struct Player{
-	int fa,cost,lead;
-}R[N<<2];
+namespace AC {
+const int SZ = N * 80;
+int tot, tr[SZ][26];
+int fail[SZ], idx[SZ], val[SZ];
+int cnt[N];  // 记录第 i 个字符串的出现次数
 
-int n,m;
-LL ans;
-int size[N],root[N],dis[N],ls[N],rs[N];
-LL sum[N];
-void BuildHeap(int now){
-	size[now]=1;
-	root[now]=now;
-	sum[now]=R[now].cost;
-}
-int Merge(int A,int B){
-	if(!A||!B) return A+B;
-	if(R[A].cost<R[B].cost) swap(A,B);
-	rs[A]=Merge(rs[A],B);
-	if(dis[ls[A]]<dis[rs[A]]) swap(ls[A],rs[A]);
-	dis[A]=dis[rs[A]]+1;
-	return A;
-}
-int main(){
-	//freopen("Master.in","r",stdin);
-	//freopen("Master.out","w",stdout);
-	n=gi();m=gi();
-	for(int i=1,b,c,l;i<=n;i++){
-		b=gi();c=gi();l=gi();
-		R[i]=(Player){b,c,l};
-		ans=max((LL)(R[i].lead),ans);
-		BuildHeap(i);    //每个忍者看成一个单独的堆
-	}
-	for(int i=n;i>1;i--){
-		int fa=R[i].fa;          //当前的忍者看作为领导,对每个点都进行枚举
-		root[fa]=Merge(root[i],root[R[i].fa]);      //合并当前节点和本身的父亲节点
-		size[fa]+=size[i];sum[fa]+=sum[i];        //把当前的元素加到父亲数size和sum都想应改变
-		while(sum[fa]>m){
-			sum[fa]-=R[root[fa]].cost;      //如果超过了删除堆顶元素
-			root[fa]=Merge(ls[root[fa]],rs[root[fa]]);     
-			size[fa]--;    //更新size
-		}
-		ans=max(ans,(LL)(R[fa].lead)*(LL)(size[fa]));   //取max的ans
-	}
-	cout<<ans<<endl;
-	return 0;
+void init() {
+  memset(fail, 0, sizeof(fail));
+  memset(tr, 0, sizeof(tr));
+  memset(val, 0, sizeof(val));
+  memset(cnt, 0, sizeof(cnt));
+  memset(idx, 0, sizeof(idx));
+  tot = 0;
 }
 
+void insert(char *s, int id) {  // id 表示原始字符串的编号
+  int u = 0;
+  for (int i = 1; s[i]; i++) {
+    if (!tr[u][s[i] - 'a']) tr[u][s[i] - 'a'] = ++tot;
+    u = tr[u][s[i] - 'a'];  // 转移
+  }
+  idx[u] = id;  // 以 u 为结尾的字符串编号为 idx[u]
+}
+
+queue<int> q;
+
+void build() {
+  for (int i = 0; i < 26; i++)
+    if (tr[0][i]) q.push(tr[0][i]);
+  while (q.size()) {
+    int u = q.front();
+    q.pop();
+    for (int i = 0; i < 26; i++) {
+      if (tr[u][i]) {
+        fail[tr[u][i]] =
+            tr[fail[u]][i];  // fail数组：同一字符可以匹配的其他位置
+        q.push(tr[u][i]);
+      } else
+        tr[u][i] = tr[fail[u]][i];
+    }
+  }
+}
+
+int query(char *t) {  // 返回最大的出现次数
+  int u = 0, res = 0;
+  for (int i = 1; t[i]; i++) {
+    u = tr[u][t[i] - 'a'];
+    for (int j = u; j; j = fail[j]) val[j]++;
+  }
+  for (int i = 0; i <= tot; i++)
+    if (idx[i]) res = max(res, val[i]), cnt[idx[i]] = val[i];
+  return res;
+}
+}  // namespace AC
+
+int n;
+char s[N][100], t[L];
+
+int main() {
+  while (~scanf("%d", &n)) {
+    if (n == 0) break;
+    AC::init();  // 数组清零
+    for (int i = 1; i <= n; i++)
+      scanf("%s", s[i] + 1), AC::insert(s[i], i);  // 需要记录该字符串的序号
+    AC::build();
+    scanf("%s", t + 1);
+    int x = AC::query(t);
+    printf("%d\n", x);
+    for (int i = 1; i <= n; i++)
+      if (AC::cnt[i] == x) printf("%s\n", s[i] + 1);
+  }
+  return 0;
+}
