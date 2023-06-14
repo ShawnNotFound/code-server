@@ -17,20 +17,20 @@ int yx,yy,vx,vy,tx,ty;
 struct sair
 {
     int x, y, step;
-}
+};
 
 struct Step
 {
     int x, y;
     int step, num;
     int dir;
-}
-
-struct Step{
-    int x,y,step,num,dir;
 };
 
-int dir[4][2]={0,1,0,-1,1,0,-1,0};
+int dir[4][2]={0 ,  1,  
+               0 , -1,
+               1 ,  0, 
+              -1 ,  0};
+
 sair Q[1000005];
 int Qs,Qe;
 
@@ -53,56 +53,77 @@ void bfsV(){
     s.x = vx;
     s.y = vy;
     s.step = 0;
-    memset(book,-1,sizeof(book));
+
+    memset(book, -1, sizeof(book));
+
     push(s);
+
     flag[s.x][s.y] = 1;
     book[s.x][s.y] = 0;
+
     while(Qs != Qe)
     {
-        s=Front();
+        s = Front();
         pop();
-        int co=1;
-        int tmp=s.y+co;
-        while(tmp<m&&map[s.x][tmp]!='I'){
-            if(book[s.x][tmp]==-1){
-                book[s.x][tmp]=s.step;
-            }
-            co++;
-            tmp=s.y+co;
+        int co = 1;
+        int tmp = s.y + co;
+
+        while(tmp < m && map[s.x][tmp] != 'I')
+        {
+            if(book[s.x][tmp] == -1)
+                book[s.x][tmp] = s.step;
+
+            co ++;
+            tmp = s.y + co;
         }
-        co=-1;
-        tmp=s.y+co;
-        while(tmp>=0&&map[s.x][tmp]!='I'){
-            if(book[s.x][tmp]==-1){
-                book[s.x][tmp]=s.step;
-            }
-            co--;
-            tmp=s.y+co;
+
+        co = -1;
+
+        tmp = s.y + co;
+
+        while(tmp >= 0 && map[s.x][tmp] != 'I')
+        {
+            if(book[s.x][tmp] == -1)
+                book[s.x][tmp] = s.step;
+
+            co --;
+            tmp = s.y + co;
         }
-        co=1;
-        tmp=s.x+co;
-        while(tmp<n&&map[tmp][s.y]!='I'){
-            if(book[tmp][s.y]==-1){
+
+        co = 1;
+        tmp = s.x + co;
+
+        while(tmp < n && map[tmp][s.y] != 'I')
+        {
+            if(book[tmp][s.y]==-1)
                 book[tmp][s.y]=s.step;
-            }
-            co++;
-            tmp=s.x+co;
+            
+            co ++;
+            tmp = s.x + co;
         }
-        co=-1;
-        tmp=s.x+co;
-        while(tmp>=0&&map[tmp][s.y]!='I'){
-            if(book[tmp][s.y]==-1){
-                book[tmp][s.y]=s.step;
-            }
-            co--;
-            tmp=s.x+co;
+        
+        co = -1;
+        tmp = s.x + co;
+
+        while(tmp >= 0 && map[tmp][s.y] != 'I')
+        {
+            if(book[tmp][s.y] == -1)
+                book[tmp][s.y] = s.step;
+
+            co --;
+            tmp = s.x + co;            
         }
-        for(int i=0;i<4;i++){
-            e.x=s.x+dir[i][0];
-            e.y=s.y+dir[i][1];
-            if(e.x>=0&&e.x<n&&e.y>=0&&e.y<m&&map[e.x][e.y]!='I'&&!flag[e.x][e.y]){
-                flag[e.x][e.y]=1;
-                e.step=s.step+1;
+
+        for(int i = 0; i < 4; i ++)
+        {
+            e.x = s.x + dir[i][0];
+            e.y = s.y + dir[i][0];
+
+            if((e.x >= 0) && (e.x < n) && (e.y >= 0) && (e.y < m) && (map[e.x][e.y] != 'I') && (!flag[e.x][e.y]))
+            {
+                flag[e.x][e.y] = true;
+
+                e.step = s.step + 1; 
                 push(e);
             }
         }
@@ -139,7 +160,7 @@ void bfsY()
                 flag[e.x][e.y]=1;
                 if(e.x==tx&&e.y==ty)
                 {
-                    puts("YES");
+                    cout << "YES";
                     return;
                 }
                 Q.push(e);
