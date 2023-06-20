@@ -1,60 +1,86 @@
-#include<cstdio>
-#include<cstring>
-using namespace std; 
-
-struct Monotone_queue
-{
-    static const int maxn=1000001;
-    int n,k,a[maxn];
-    int q[maxn],head,tail,p[maxn];//同题目叙述一样，q是单调队列，p是对应编号。
-    
-    void read()
-    {
-        scanf("%d %d",&n,&k);
-        for(int i=1;i<=n;++i)
-            scanf("%d",&a[i]);
-    }//读入不必说了
-    
-    void monotone_max()//单调最大值
-    {
-        head=1;
-        tail=0;
-        for(int i=1;i<=n;++i)
-        {
-            while(head<=tail&&q[tail]<=a[i])
-                tail--;
-            q[++tail]=a[i];
-            p[tail]=i;
-            while(p[head]<=i-k)
-                head++;
-            if(i>=k)printf("%d ",q[head]);
+#include <iostream>
+#include <cstdio>
+#include <queue>
+#include <cstring>
+#include <cctype>
+using namespace std;
+inline void read(int &x) {
+    x = 0; char c = getchar();
+    while(!isdigit(c)) c = getchar();
+    while(isdigit(c)) x = (x << 3) + (x << 1) + c - '0', c = getchar();
+}
+#define MAXN 1003
+struct node{
+    int fr, to, va, nxt;
+}edge[MAXN * MAXN * 6];
+int head[MAXN * MAXN], cnt;
+inline void add_edge(int u, int v, int w) {
+    edge[cnt].fr = u, edge[cnt].to = v, edge[cnt].va = w;
+    edge[cnt].nxt = head[u], head[u] = cnt++;
+    edge[cnt].fr = v, edge[cnt].to = u, edge[cnt].va = w;
+    edge[cnt].nxt = head[v], head[v] = cnt++; //反向边初始化
+}
+int st, ed, rank[MAXN * MAXN];
+int BFS() {
+    queue<int> q;
+    memset(rank, 0, sizeof rank);
+    rank[st] = 1;
+    q.push(st);
+    while(!q.empty()) {
+        int tmp = q.front();
+        //cout<<tmp<<endl;
+        q.pop();
+        for(int i = head[tmp]; i != -1; i = edge[i].nxt) {
+            int o = edge[i].to;
+            if(rank[o] || edge[i].va <= 0) continue;
+            rank[o] = rank[tmp] + 1;
+            q.push(o);
         }
-        printf("\n");
     }
-    
-    void monotone_min()
-    {
-        head=1;
-        tail=0;//为啥要这样呢?因为head要严格对应首元素，tail要严格对应尾元素，所以当tail>=head时，说明有元素。而一开始队列为空，说一要这样赋值。其实这跟普通队列一样。
-        for(int i=1;i<=n;++i)
-        {//a[i]表示当前要处理的值
-            while(head<=tail&&q[tail]>=a[i])
-                tail--;//只要队列里有元素，并且尾元素比待处理值大，即表示尾元素已经不可能出场，所以出队。直到尾元素小于待处理值，满足"单调"。
-            q[++tail]=a[i];//待处理值入队。
-            p[tail]=i;//同时存下其编号
-            while(p[head]<=i-k)
-                head++;//如果队首元素已经"过时"，出队。
-            if(i>=k)printf("%d ",q[head]);//输出最值，即队首元素。i>=k表示该输出，至于why就自己看题目。
+    return rank[ed];
+}
+int dfs(int u, int flow) {
+    if(u == ed) return flow;
+    int add = 0;
+    for(int i = head[u]; i != -1 && add < flow; i = edge[i].nxt) {
+        int v = edge[i].to;
+        if(rank[v] != rank[u] + 1 || !edge[i].va) continue;
+        int tmpadd = dfs(v, min(edge[i].va, flow - add));
+        if(!tmpadd) {  //重要！就是这里！
+            rank[v] = -1;
+            continue;
         }
-        printf("\n");
-        
+        edge[i].va -= tmpadd, edge[i ^ 1].va += tmpadd;
+        add += tmpadd;
     }
-}worker;
-
-int main()
-{
-    worker.read();
-    worker.monotone_min();
-    worker.monotone_max();
+    return add;
+}
+int ans;
+void dinic() {
+    while(BFS()) ans += dfs(st, 0x3fffff); 
+}
+int n, m;
+inline int gethash(int i, int j) {
+    return (i - 1) * m + j;
+}
+int main() {
+    memset(head, -1, sizeof head);
+    read(n), read(m);
+    int tmp;
+    st = 1, ed = gethash(n, m);
+    for(int i = 1; i <= n; ++i) {
+        for(int j = 1; j < m; ++j)
+            read(tmp), add_edge(gethash(i, j), gethash(i, j + 1), tmp);
+    }
+    for(int i = 1; i < n; ++i) {
+        for(int j = 1; j <= m; ++j) 
+            read(tmp), add_edge(gethash(i, j), gethash(i + 1, j), tmp);
+    }
+    for(int i = 1; i < n; ++i) {
+        for(int j = 1; j < m; ++j) 
+            read(tmp), add_edge(gethash(i, j), gethash(i + 1, j + 1), tmp);
+    }
+    dinic();
+    cout<<ans<<endl;
     return 0;
 }
