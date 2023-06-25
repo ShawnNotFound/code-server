@@ -1,86 +1,50 @@
-#include <iostream>
-#include <cstdio>
-#include <queue>
-#include <cstring>
-#include <cctype>
+#include<cstdio>
+#include<algorithm>
 using namespace std;
-inline void read(int &x) {
-    x = 0; char c = getchar();
-    while(!isdigit(c)) c = getchar();
-    while(isdigit(c)) x = (x << 3) + (x << 1) + c - '0', c = getchar();
+const int N=1e6+10;
+typedef long long ll;
+
+int ver[N];int nxt[N];int tot;int head[N];int col[N];int n;
+int lstu[N];int lstv[N];
+inline void add(int u,int V)
+{
+    ver[++tot]=V;
+    nxt[tot]=head[u];
+    head[u]=tot;
 }
-#define MAXN 1003
-struct node{
-    int fr, to, va, nxt;
-}edge[MAXN * MAXN * 6];
-int head[MAXN * MAXN], cnt;
-inline void add_edge(int u, int v, int w) {
-    edge[cnt].fr = u, edge[cnt].to = v, edge[cnt].va = w;
-    edge[cnt].nxt = head[u], head[u] = cnt++;
-    edge[cnt].fr = v, edge[cnt].to = u, edge[cnt].va = w;
-    edge[cnt].nxt = head[v], head[v] = cnt++; //反向边初始化
-}
-int st, ed, rank[MAXN * MAXN];
-int BFS() {
-    queue<int> q;
-    memset(rank, 0, sizeof rank);
-    rank[st] = 1;
-    q.push(st);
-    while(!q.empty()) {
-        int tmp = q.front();
-        //cout<<tmp<<endl;
-        q.pop();
-        for(int i = head[tmp]; i != -1; i = edge[i].nxt) {
-            int o = edge[i].to;
-            if(rank[o] || edge[i].va <= 0) continue;
-            rank[o] = rank[tmp] + 1;
-            q.push(o);
+inline void dfs(int u,int tw)
+{
+    col[u]=tw;
+    for(int i=head[u];i;i=nxt[i])
+        if(col[ver[i]]==-1)
+            dfs(ver[i],tw^1);
+} 
+int main()
+{
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+        col[i]=-1;
+    for(int i=1,x,y;i<=n;i++)
+    {
+        scanf("%d%d",&x,&y);
+        if(lstu[x])
+        {
+            add(lstu[x],i),add(i,lstu[x]),lstu[x]=0;
         }
-    }
-    return rank[ed];
-}
-int dfs(int u, int flow) {
-    if(u == ed) return flow;
-    int add = 0;
-    for(int i = head[u]; i != -1 && add < flow; i = edge[i].nxt) {
-        int v = edge[i].to;
-        if(rank[v] != rank[u] + 1 || !edge[i].va) continue;
-        int tmpadd = dfs(v, min(edge[i].va, flow - add));
-        if(!tmpadd) {  //重要！就是这里！
-            rank[v] = -1;
-            continue;
+        else 
+            lstu[x]=i;
+        if(lstv[y])
+        {
+            add(lstv[y],i),add(i,lstv[y]),lstv[y]=0;
         }
-        edge[i].va -= tmpadd, edge[i ^ 1].va += tmpadd;
-        add += tmpadd;
+        else 
+            lstv[y]=i;
     }
-    return add;
-}
-int ans;
-void dinic() {
-    while(BFS()) ans += dfs(st, 0x3fffff); 
-}
-int n, m;
-inline int gethash(int i, int j) {
-    return (i - 1) * m + j;
-}
-int main() {
-    memset(head, -1, sizeof head);
-    read(n), read(m);
-    int tmp;
-    st = 1, ed = gethash(n, m);
-    for(int i = 1; i <= n; ++i) {
-        for(int j = 1; j < m; ++j)
-            read(tmp), add_edge(gethash(i, j), gethash(i, j + 1), tmp);
-    }
-    for(int i = 1; i < n; ++i) {
-        for(int j = 1; j <= m; ++j) 
-            read(tmp), add_edge(gethash(i, j), gethash(i + 1, j), tmp);
-    }
-    for(int i = 1; i < n; ++i) {
-        for(int j = 1; j < m; ++j) 
-            read(tmp), add_edge(gethash(i, j), gethash(i + 1, j + 1), tmp);
-    }
-    dinic();
-    cout<<ans<<endl;
+    for(int i=1;i<=n;i++)
+        if(col[i]==-1)
+            dfs(i,0);
+    for(int i=1;i<=n;i++)
+        putchar((col[i])?'r':'b');
+    
     return 0;
 }
