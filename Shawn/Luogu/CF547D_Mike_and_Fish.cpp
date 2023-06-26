@@ -95,21 +95,65 @@ const int N = 1e6 + 10;
 
 using namespace std;
 
-int ver[N], head[N], nxt[N], c[N];
+int n;
+int ver[N], head[N], nxt[N];
+int lx[N], ly[N], c[N];
 int tot;
 
 void add(int x, int y)
 {
-    ver[++ tot] = y;
-    nxt[tot] = head[x];
-    head[x] = tot;
+    ver[++ tot] = y, nxt[tot] = head[x], head[x] = tot;
+    ver[++ tot] = x, nxt[tot] = head[y], head[y] = tot;
 }
 
 void dfs(int u, int pre)
 {
     c[u] = pre;
-    for(int i = 1; i; i = nxt[i])
+    for(int i = head[u]; i; i = nxt[i])
         if(c[ver[i]] == -1)
             dfs(ver[i], pre ^ 1);
 }
 
+void init()
+{
+    for(int i = 1; i <= n + 5; i ++)
+        c[i] = -1;
+}
+
+int main()
+{
+    cin >> n;
+    
+    init();
+
+    for(int i = 1; i <= n; i ++)
+    {
+        int x, y;
+        cin >> x >> y;
+
+        if(lx[x])
+        {
+            add(lx[x], i);
+            lx[x] = 0;
+        }
+        else
+            lx[x] = i;
+        
+        if(ly[y])
+        {
+            add(ly[y], i);
+            ly[y] = 0;
+        }
+        else
+            ly[y] = i;
+    }
+
+    for(int i = 1; i <= n; i ++)
+        if(c[i] == -1)  
+            dfs(i, 0);
+
+    for(int i = 1; i <= n; i ++)
+        cout << (c[i] ? 'r' : 'b');
+
+    return 0;
+}
