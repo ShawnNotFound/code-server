@@ -3,9 +3,7 @@
 #include<algorithm>
 #include<cmath>
 
-#define int long long
-
-const int N = 300 + 10;
+const int N = 5e3 + 10;
 
 using namespace std;
 
@@ -15,6 +13,10 @@ int map[N][N];
 
 signed main()
 {
+	freopen("test.in", "r", stdin);
+	freopen("test.out", "w", stdout);
+	
+	
     cin >> n;
     for(int i = 1; i <= n; i ++)
         cin >> h[i];
@@ -25,21 +27,38 @@ signed main()
     {
         map[1][i] = 0;
     }
-    for(int d = 2; d <= 3; d ++)
+    if(n > 2)
     {
-        int minn = 1e15 + 10;
-        for(int i = 1; i <= n - d + 1; i ++)
-        {
-            map[d][i] = abs(h[i + d - 1] - h[i]);
+        for(int d = 2; d <= 3; d ++)
+    	{
+        	int minn = 2e9 + 10;
+        	for(int i = 1; i <= n - d + 1; i ++)
+        	{
+            	map[d][i] = abs(h[i + d - 1] - h[i]);
+            	minn = min(minn, map[d][i]);
+        	}
+
+	        cout << minn << " ";
+    	}	
+	}
+	
+	if(n == 2)
+	{
+		int d = 2;
+		int minn = 2e9 + 10;
+    	for(int i = 1; i <= n - d + 1; i ++)
+    	{
+        	map[d][i] = abs(h[i + d - 1] - h[i]);
             minn = min(minn, map[d][i]);
         }
 
-        cout << minn << " ";
-    }
+	    cout << minn << " ";
+	}
+
 
     for(int d = 4; d <= n; d ++)
     {
-        int minn = 1e15 + 10;
+        int minn = 2e9 + 10;
 
         for(int i = 1; i <= n - d + 1; i ++)
         {
