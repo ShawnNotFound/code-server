@@ -26,7 +26,7 @@
         {
             "type": "shell",
             "label": "redirection run without pwsh",
-            "command": "g++ -g '${file}' -o ${workspaceRoot}/executable_files/'${fileBasenameNoExtension}' -std=c++14 -O2 -fsanitize=undefined -fsanitize=address && cat ${workspaceRoot}/io/input | ${workspaceRoot}/executable_files/'${fileBasenameNoExtension}' > ${workspaceRoot}/io/output",
+            "command": "g++ -g '${file}' -o ${workspaceRoot}/executable_files/'${fileBasenameNoExtension}' -std=c++14 -O2 && cat ${workspaceRoot}/io/input | ${workspaceRoot}/executable_files/'${fileBasenameNoExtension}' > ${workspaceRoot}/io/output",
             "group": {
                 "kind": "build",
                 "isDefault": true
